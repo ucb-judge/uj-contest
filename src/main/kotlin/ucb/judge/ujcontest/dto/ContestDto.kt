@@ -10,8 +10,8 @@ data class ContestDto(
     var description: String,
     var startDate: Timestamp,
     var endDate: Timestamp,
-    var professor: Professor?,
-    var subject: Subject?,
+    var professor: ProfessorDto? = null,
+    var subject: SubjectDto? = null,
 
     // TODO: Check if studentContests, contestProblems, contestScoreboard are needed
 

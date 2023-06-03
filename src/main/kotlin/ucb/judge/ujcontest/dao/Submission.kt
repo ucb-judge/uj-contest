@@ -15,21 +15,21 @@ class Submission {
     @JoinColumn(name = "student_id")
     var student: Student? = null;
 
-    @OneToOne
-    @JoinColumn(name = "s3_source_code")
-    var s3SourceCode: S3Object? = null;
+//    @OneToOne
+//    @JoinColumn(name = "s3_source_code")
+//    var s3SourceCode: S3Object? = null;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "language_id")
-    var language: Language? = null;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "language_id")
+//    var language: Language? = null;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contest_problem_id")
     var contestProblem: ContestProblem? = null;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "verdict_type_id")
-    var verdictType: VerdictType? = null;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "verdict_type_id")
+//    var verdictType: VerdictType? = null;
 
     @Column(name = "submission_date")
     var submissionDate: Timestamp? = null;
@@ -37,6 +37,6 @@ class Submission {
     @Column(name = "status")
     var status: Boolean = true;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "submission")
-    var comments: List<Comment>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "submission")
+//    var comments: List<Comment>? = null;
 }

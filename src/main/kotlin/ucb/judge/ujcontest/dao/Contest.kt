@@ -28,11 +28,14 @@ class Contest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")
-    var professor: Professor? = null;
+    lateinit var professor: Professor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     var subject: Subject? = null;
+
+    @Column(name = "is_public")
+    var isPublic: Boolean = true;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
     var studentContests: List<StudentContest>? = null;
@@ -40,9 +43,6 @@ class Contest {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "contest")
     var contestProblems: List<ContestProblem>? = null;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "contest")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contest")
     var contestScoreboard : List<ContestScoreboard>? = null;
-
-    @Column(name = "is_public")
-    var isPublic: Boolean = false;
 }

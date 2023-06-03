@@ -13,9 +13,9 @@ class Problem {
     @Column(name = "title")
     var title: String = "";
 
-    @OneToOne
-    @JoinColumn(name = "s3_description_id")
-    var s3Description: S3Object? = null;
+//    @OneToOne
+//    @JoinColumn(name = "s3_description_id")
+//    var s3Description: S3Object? = null;
 
     @Column(name = "max_time")
     var maxTime: Double = 0.0;
@@ -32,14 +32,14 @@ class Problem {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
     var problemTags: List<ProblemTag>? = null;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
-    var admittedLanguages: List<AdmittedLanguage>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
+//    var admittedLanguages: List<AdmittedLanguage>? = null;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
     var contestProblems: List<ContestProblem>? = null;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
-    var testcases: List<Testcase>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "problem")
+//    var testcases: List<Testcase>? = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")

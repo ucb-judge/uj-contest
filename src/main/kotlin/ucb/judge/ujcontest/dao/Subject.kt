@@ -26,18 +26,18 @@ class Subject {
     @Column(name = "status")
     var status: Boolean = true;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject")
-    var studentSubjects: List<StudentSubject>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject")
+//    var studentSubjects: List<StudentSubject>? = null;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject")
-    var contests: List<Contest>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject")
+//    var contests: List<Contest>? = null;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "campus_major_id")
-    var campusMajor: CampusMajor? = null;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "campus_major_id")
+//    var campusMajor: CampusMajor? = null;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professor_id")
-    var professor: Professor? = null;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "professor_id")
+//    var professor: Professor? = null;
 
 }

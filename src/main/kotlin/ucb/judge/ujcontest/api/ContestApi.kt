@@ -2,29 +2,30 @@ package ucb.judge.ujcontest.api
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ucb.judge.ujcontest.bl.ContestBl
-import ucb.judge.ujcontest.dao.Contest
+import ucb.judge.ujcontest.dto.ContestDto
+import ucb.judge.ujcontest.dto.ProblemDto
 import ucb.judge.ujcontest.dto.ResponseDto
 
 @RestController
 @RequestMapping("/api/v1/contest")
 class ContestApi @Autowired constructor(
-    private val contestBl: ContestBl
+    private val contestBl: ContestBl,
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(ContestApi::class.java)
     }
-
 
     /**
      * Get all contests
      * @return List of contests
     */
     @GetMapping("")
-    fun getContest(): ResponseEntity<ResponseDto<MutableIterable<ContestDto>>> {
-        logger.info("Get contests")
+    fun getContest(): ResponseEntity<ResponseDto<List<ContestDto>>> {
+        logger.info("GET /contests endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.getContests()
@@ -37,9 +38,15 @@ class ContestApi @Autowired constructor(
      * @return Contest created
     */
     @PostMapping("")
-    fun createContest(): String {
-        logger.info("Create contest")
-        return "Contest created"
+    fun createContest(
+        @RequestBody contestDto: ContestDto
+    ): ResponseEntity<ResponseDto<Long>> {
+        logger.info("POST /contest endpoint reached")
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ResponseDto.success(
+                contestBl.createContest(contestDto)
+            )
+        )
     }
 
     /**
@@ -50,22 +57,13 @@ class ContestApi @Autowired constructor(
     @GetMapping("/{contestId}")
     fun getContestById(
         @PathVariable contestId: Long
-    ): String {
-        logger.info("Get contest by id")
-        return "Contest by id"
-    }
-
-    /**
-     * Create a contest by id
-     * @param contestId
-     * @return Contest created by id
-    */
-    @PostMapping("/{contestId}")
-    fun createContestById(
-        @PathVariable contestId: Long
-    ): String {
-        logger.info("Create contest by id")
-        return "Contest created by id"
+    ): ResponseEntity<ResponseDto<ContestDto>> {
+        logger.info("GET /contest/$contestId endpoint reached")
+        return ResponseEntity.ok(
+            ResponseDto.success(
+                contestBl.getContestById(contestId)
+            )
+        )
     }
 
     /**
@@ -75,10 +73,15 @@ class ContestApi @Autowired constructor(
     */
     @PutMapping("/{contestId}")
     fun updateContest(
-        @PathVariable contestId: Long
-    ): String {
-        logger.info("Update contest")
-        return "Contest updated"
+        @PathVariable contestId: Long,
+        @RequestBody contestDto: ContestDto
+    ): ResponseEntity<ResponseDto<Long>> {
+        logger.info("PUT /contest/$contestId endpoint reached")
+        return ResponseEntity.ok(
+            ResponseDto.success(
+                contestBl.updateContest(contestId, contestDto)
+            )
+        )
     }
 
     /**
@@ -89,8 +92,40 @@ class ContestApi @Autowired constructor(
     @DeleteMapping("/{contestId}")
     fun deleteContest(
         @PathVariable contestId: Long
-    ): String {
-        logger.info("Delete contest")
-        return "Contest deleted"
+    ): ResponseEntity<ResponseDto<Long>> {
+        logger.info("DELETE /contest/$contestId endpoint reached")
+        return ResponseEntity.ok(
+            ResponseDto.success(
+                contestBl.deleteContest(contestId)
+            )
+        )
     }
+
+//    //FIXME: This endpoint is not working
+//    @GetMapping("/{contestId}/problems")
+//    fun getProblemsByContestId(
+//        @PathVariable contestId: Long
+//    ): ResponseEntity<ResponseDto<List<ProblemDto>>> {
+//        logger.info("GET /contest/$contestId/problems endpoint reached")
+//        return ResponseEntity.ok(
+//            ResponseDto.success(
+//                contestBl.getProblemsByContestId(contestId)
+//            )
+//        )
+//    }
+
+
+
+//    @GetMapping("/{contestId}/scoreboard")
+//    fun getScoreboardByContestId(
+//        @PathVariable contestId: Long
+//    ): ResponseEntity<ResponseDto<List<ContestScoreboardDto>>> {
+//        logger.info("GET /contest/$contestId/scoreboard endpoint reached")
+//        return ResponseEntity.ok(
+//            ResponseDto.success(
+//                contestBl.getScoreboardByContestId(contestId)
+//            )
+//        )
+//    }
+
 }

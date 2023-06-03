@@ -1,8 +1,6 @@
 package ucb.judge.ujcontest.mapper.impl
 
-import ucb.judge.ujcontest.dao.Contest
 import ucb.judge.ujcontest.dao.Professor
-import ucb.judge.ujcontest.dto.ContestDto
 import ucb.judge.ujcontest.dto.ProfessorDto
 import ucb.judge.ujcontest.mapper.ProfessorMapper
 
@@ -12,5 +10,12 @@ class ProfessorMapperImpl : ProfessorMapper {
             professorId = professor.professorId,
             kcUuid = professor.kcUuid,
         );
+    }
+
+    override fun toEntity(professorDto: ProfessorDto) : Professor {
+        val professor = Professor()
+        professor.professorId = professorDto.professorId
+        professor.kcUuid = professorDto.kcUuid
+        return professor
     }
 }

@@ -16,15 +16,15 @@ class Professor {
     @Column(name = "status")
     var status: Boolean = true;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
-    var subjects: List<Subject>? = null;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
-    var problems: List<Problem>? = null;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
-    var contests: List<Contest>? = null;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
-    var clarifications: List<Clarification>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
+//    var subjects: List<Subject>? = null;
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
+//    var problems: List<Problem>? = null;
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
+//    var contests: List<Contest>? = null;
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
+//    var clarifications: List<Clarification>? = null;
 }

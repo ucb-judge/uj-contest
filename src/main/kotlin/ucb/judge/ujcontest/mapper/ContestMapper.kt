@@ -7,4 +7,5 @@ import ucb.judge.ujcontest.dto.ContestDto
 @Mapper
 interface ContestMapper  {
     fun toDto(contest: Contest) : ContestDto;
+    fun toEntity(contestDto: ContestDto) : Contest;
 }

@@ -16,18 +16,18 @@ class Student {
     @Column(name = "status")
     var status: Boolean = true;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "campus_major_id", nullable = false)
-    var campusMajor: CampusMajor? = null;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
-    var studentSubjects: List<StudentSubject>? = null;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "campus_major_id", nullable = false)
+//    var campusMajor: CampusMajor? = null;
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+//    var studentSubjects: List<StudentSubject>? = null;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     var studentContests: List<StudentContest>? = null;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
-    var contestScoreboards: List<ContestScoreboard>? = null;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
+//    var contestScoreboards: List<ContestScoreboard>? = null;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "student")
     var submissions: List<Submission>? = null;
