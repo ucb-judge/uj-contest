@@ -3,14 +3,22 @@ package ucb.judge.ujcontest.bl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import ucb.judge.ujcontest.dao.repository.ContestRepository
-import ucb.judge.ujcontest.dao.repository.ProfessorRepository
+import ucb.judge.ujcontest.dao.ContestProblem
+import ucb.judge.ujcontest.dao.Problem
+import ucb.judge.ujcontest.dao.repository.*
 import ucb.judge.ujcontest.dto.ContestDto
+import ucb.judge.ujcontest.dto.ProblemDto
+import ucb.judge.ujcontest.dto.StudentDto
 import ucb.judge.ujcontest.exception.UjNotFoundException
 import ucb.judge.ujcontest.mapper.ContestMapper
+import ucb.judge.ujcontest.mapper.ProblemMapper
 import ucb.judge.ujcontest.mapper.ProfessorMapper
+import ucb.judge.ujcontest.mapper.StudentMapper
 import ucb.judge.ujcontest.mapper.impl.ContestMapperImpl
+import ucb.judge.ujcontest.mapper.impl.ProblemMapperImpl
 import ucb.judge.ujcontest.mapper.impl.ProfessorMapperImpl
+import ucb.judge.ujcontest.mapper.impl.StudentMapperImpl
+import ucb.judge.ujcontest.service.UjProblemsService
 import ucb.judge.ujcontest.service.UjUsersService
 import ucb.judge.ujcontest.util.KeycloakSecurityContextHolder
 
@@ -18,10 +26,12 @@ import ucb.judge.ujcontest.util.KeycloakSecurityContextHolder
 @Service
 class ContestBl @Autowired constructor(
     private val contestRepository: ContestRepository,
-//    private val problemRepository: ProblemRepository,
-//    private val contestProblemRepository: ContestProblemRepository,
     private val professorRepository: ProfessorRepository,
+    private val studentContestRepository: StudentContestRepository,
+    private val contestProblemRepository: ContestProblemRepository,
+    private val problemRepository: ProblemRepository,
     private val ujUsersService: UjUsersService,
+    private val ujProblemsService: UjProblemsService,
     private val keycloakBl: KeycloakBl
 ){
     companion object {
@@ -88,21 +98,49 @@ class ContestBl @Autowired constructor(
         return contestRepository.save(contest).contestId
     }
 
+    fun getParticipantsByContestId(contestId: Long): List<StudentDto> {
+        logger.info("Get participants by contest id Business Logic initiated")
+        contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
+        val participants = studentContestRepository.findStudentsByContestContestId(contestId);
+        println(participants.toString())
+        val studentMapper: StudentMapper = StudentMapperImpl()
+        return participants.map {participant -> studentMapper.toDto(participant.student!!) }
+    }
 
 
-//    fun getProblemsByContestId(contestId: Long): List<ProblemDto> { // TODO: COMUNICATE WITH uj-problems
-//        logger.info("Get problems by contest id Business Logic initiated")
-//        contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
-//        val problems = contestProblemRepository.findAllByContestId(contestId)
-//        val problemMapper: ProblemMapper = ProblemMapperImpl()
-//        return problems.map {problem -> problemMapper.toDto(problem) }
-//    }
 
-//    fun getScoreboardByContestId(contestId: Long): List<ProblemDto> {
-//        logger.info("Get scoreboard by contest id Business Logic initiated")
-//        contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
-//        val problems = contestProblemRepository.findAllByContestId(contestId)
-//        val problemMapper: ProblemMapper = ProblemMapperImpl()
-//        return problems.map {problem -> problemMapper.toDto(problem) }
-//    }
+    fun getProblemsByContestId(contestId: Long): List<ProblemDto> {
+        logger.info("Get problems by contest id Business Logic initiated")
+        contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
+        val problems = contestProblemRepository.findAllByContestContestId(contestId)
+
+        val token = "Bearer ${keycloakBl.getToken()}"
+
+        return problems.map { problem ->
+            ujProblemsService.getProblemById(problem.problem!!.problemId, token).data ?: throw UjNotFoundException("Problem not found")
+        }
+    }
+
+    fun addProblemToContest(contestId: Long, problemId: Long): Long {
+        logger.info("Add problem to contest Business Logic initiated")
+        val contest = contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
+        val problem = ujProblemsService.getProblemById(problemId, "Bearer ${keycloakBl.getToken()}").data ?: throw UjNotFoundException("Problem not found")
+
+        val newProblem = problemRepository.findById(problem.problemId)
+
+
+
+        val contestProblem = ContestProblem()
+        contestProblem.contest = contest
+        contestProblem.problem = newProblem.get()
+        return contestProblemRepository.save(contestProblem).contestProblemId
+    }
+
+    fun getScoreboardByContestId(contestId: Long): List<ProblemDto> {
+        logger.info("Get scoreboard by contest id Business Logic initiated")
+        contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
+        val problems = contestProblemRepository.findAllByContestId(contestId)
+        val problemMapper: ProblemMapper = ProblemMapperImpl()
+        return problems.map {problem -> problemMapper.toDto(problem) }
+    }
 }
