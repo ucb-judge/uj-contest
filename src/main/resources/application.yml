@@ -4,17 +4,17 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ucb-judge
-#    username: postgres
-#    password: postgres
+    #    username: postgres
+    #    password: postgres
     driver-class-name: org.postgresql.Driver
     jpa:
-        hibernate:
-            ddl-auto: none
+      hibernate:
+        ddl-auto: none
 
 eureka:
-    client:
-        serviceUrl:
-          defaultZone: http://localhost:8711/eureka/
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8711/eureka/
 
 keycloak:
   auth-server-url: http://localhost:8090
@@ -28,6 +28,7 @@ keycloak:
   security-constraints:
     - auth-roles:
         - professor
+        - student
       security-collections:
         - name: contests
           omitted-methods:
@@ -44,4 +45,3 @@ keycloak:
 #            - GET
 #          patterns:
 #            - /api/v1/problems
-
