@@ -143,7 +143,7 @@ class ContestApi @Autowired constructor(
         logger.info("GET /contest/$contestId/scoreboard endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
-                contestBl.getScoreboardByContestId(contestId) //FIXME: Implement
+                contestBl.getScoreboard(contestId)
             )
         )
     }

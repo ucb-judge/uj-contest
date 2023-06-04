@@ -4,18 +4,18 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import ucb.judge.ujcontest.dao.ContestProblem
-import ucb.judge.ujcontest.dao.Problem
 import ucb.judge.ujcontest.dao.repository.*
 import ucb.judge.ujcontest.dto.ContestDto
+import ucb.judge.ujcontest.dto.ContestScoreboardDto
 import ucb.judge.ujcontest.dto.ProblemDto
 import ucb.judge.ujcontest.dto.StudentDto
 import ucb.judge.ujcontest.exception.UjNotFoundException
 import ucb.judge.ujcontest.mapper.ContestMapper
-import ucb.judge.ujcontest.mapper.ProblemMapper
+import ucb.judge.ujcontest.mapper.ContestScoreboardMapper
 import ucb.judge.ujcontest.mapper.ProfessorMapper
 import ucb.judge.ujcontest.mapper.StudentMapper
 import ucb.judge.ujcontest.mapper.impl.ContestMapperImpl
-import ucb.judge.ujcontest.mapper.impl.ProblemMapperImpl
+import ucb.judge.ujcontest.mapper.impl.ContestScoreboardMapperImpl
 import ucb.judge.ujcontest.mapper.impl.ProfessorMapperImpl
 import ucb.judge.ujcontest.mapper.impl.StudentMapperImpl
 import ucb.judge.ujcontest.service.UjProblemsService
@@ -30,6 +30,7 @@ class ContestBl @Autowired constructor(
     private val studentContestRepository: StudentContestRepository,
     private val contestProblemRepository: ContestProblemRepository,
     private val problemRepository: ProblemRepository,
+    private val contestScoreboardRepository: ContestScoreboardRepository,
     private val ujUsersService: UjUsersService,
     private val ujProblemsService: UjProblemsService,
     private val keycloakBl: KeycloakBl
@@ -136,11 +137,13 @@ class ContestBl @Autowired constructor(
         return contestProblemRepository.save(contestProblem).contestProblemId
     }
 
-    fun getScoreboardByContestId(contestId: Long): List<ProblemDto> {
+    fun getScoreboard(contestId: Long) : List<ContestScoreboardDto> {
         logger.info("Get scoreboard by contest id Business Logic initiated")
         contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
-        val problems = contestProblemRepository.findAllByContestId(contestId)
-        val problemMapper: ProblemMapper = ProblemMapperImpl()
-        return problems.map {problem -> problemMapper.toDto(problem) }
+        val scoreboard = contestScoreboardRepository.findByContestContestId(contestId)
+        val contestScoreboardMapper : ContestScoreboardMapper = ContestScoreboardMapperImpl()
+        return scoreboard.map{ score ->
+            contestScoreboardMapper.toDto(score)
+        }
     }
 }
