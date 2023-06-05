@@ -96,6 +96,7 @@ class ContestBl @Autowired constructor(
             throw UjNotFoundException("Contest not public")
         }
         studentContestRepository.save(newStudentContest)
+        addToContestScoreboard(newStudentContest.contest!!, newStudentContest.student!!)
         logger.info("Sign up to contest Business Logic finished")
         return newStudentContest.studentContestId
     }
@@ -107,8 +108,19 @@ class ContestBl @Autowired constructor(
             throw UjNotFoundException("Contest is public")
         }
         studentContestRepository.save(newStudentContest)
+        addToContestScoreboard(newStudentContest.contest!!, newStudentContest.student!!)
         logger.info("Sign up to contest Business Logic finished")
         return newStudentContest.studentContestId
+    }
+
+    fun addToContestScoreboard(contest:Contest, student: Student) :Long {
+        val contestScoreboard = ContestScoreboard()
+        contestScoreboard.student = student
+        contestScoreboard.contest = contest
+        contestScoreboard.rank = 0
+        contestScoreboard.problemsSolved = 0
+        contestScoreboardRepository.save(contestScoreboard)
+        return contestScoreboard.contestScoreboardId
     }
 
     fun getNewStudentContest(contestId: Long, kcUuid: String) : StudentContest{
