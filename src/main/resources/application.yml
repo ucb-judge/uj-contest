@@ -40,7 +40,7 @@ keycloak:
           omitted-methods:
             - OPTIONS
           patterns:
-            - /api/v1/contest/*
+            - /api/v1/contests/*
 #    - auth-roles:
 #        - student
 #        - professor

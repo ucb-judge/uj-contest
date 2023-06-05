@@ -9,7 +9,7 @@ import ucb.judge.ujcontest.bl.ContestBl
 import ucb.judge.ujcontest.dto.*
 
 @RestController
-@RequestMapping("/api/v1/contest")
+@RequestMapping("/api/v1/contests")
 class ContestApi @Autowired constructor(
     private val contestBl: ContestBl,
 ) {
@@ -39,7 +39,7 @@ class ContestApi @Autowired constructor(
     fun createContest(
         @RequestBody contestDto: ContestDto
     ): ResponseEntity<ResponseDto<Long>> {
-        logger.info("POST /contest endpoint reached")
+        logger.info("POST /contests endpoint reached")
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ResponseDto.success(
                 contestBl.createContest(contestDto)
@@ -56,7 +56,7 @@ class ContestApi @Autowired constructor(
     fun getContestById(
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<ContestDto>> {
-        logger.info("GET /contest/$contestId endpoint reached")
+        logger.info("GET /contests/$contestId endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.getContestById(contestId)
@@ -74,7 +74,7 @@ class ContestApi @Autowired constructor(
         @PathVariable contestId: Long,
         @RequestBody contestDto: ContestDto
     ): ResponseEntity<ResponseDto<Long>> {
-        logger.info("PUT /contest/$contestId endpoint reached")
+        logger.info("PUT /contests/$contestId endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.updateContest(contestId, contestDto)
@@ -91,7 +91,7 @@ class ContestApi @Autowired constructor(
     fun deleteContest(
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<Long>> {
-        logger.info("DELETE /contest/$contestId endpoint reached")
+        logger.info("DELETE /contests/$contestId endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.deleteContest(contestId)
@@ -108,7 +108,7 @@ class ContestApi @Autowired constructor(
     fun signUpToContest(
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<Long>> {
-        logger.info("POST /contest/$contestId/signup endpoint reached")
+        logger.info("POST /contests/$contestId/signup endpoint reached")
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ResponseDto.success(
                 contestBl.signUpToContest(contestId)
@@ -121,7 +121,7 @@ class ContestApi @Autowired constructor(
         @PathVariable kcUuid: String,
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<Long>> {
-        logger.info("POST /contest/$contestId/register endpoint reached")
+        logger.info("POST /contests/$contestId/register endpoint reached")
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ResponseDto.success(
                 contestBl.registerToContest(contestId, kcUuid)
@@ -133,7 +133,7 @@ class ContestApi @Autowired constructor(
     fun getParticipantsByContestId(
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<List<StudentDto>>> {
-        logger.info("GET /contest/$contestId/participants endpoint reached")
+        logger.info("GET /contests/$contestId/participants endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.getParticipantsByContestId(contestId)
@@ -145,7 +145,7 @@ class ContestApi @Autowired constructor(
     fun getProblemsByContestId(
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<List<ProblemDto>>> {
-        logger.info("GET /contest/$contestId/problems endpoint reached")
+        logger.info("GET /contests/$contestId/problems endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.getProblemsByContestId(contestId)
@@ -158,7 +158,7 @@ class ContestApi @Autowired constructor(
         @PathVariable contestId: Long,
         @PathVariable problemId: Long
     ): ResponseEntity<ResponseDto<Long>> {
-        logger.info("POST /contest/$contestId/problems endpoint reached")
+        logger.info("POST /contests/$contestId/problems endpoint reached")
         return ResponseEntity.status(HttpStatus.CREATED).body(
             ResponseDto.success(
                 contestBl.addProblemToContest(contestId, problemId)
@@ -170,7 +170,7 @@ class ContestApi @Autowired constructor(
     fun getScoreboardByContestId(
         @PathVariable contestId: Long
     ): ResponseEntity<ResponseDto<List<ContestScoreboardDto>>> {
-        logger.info("GET /contest/$contestId/scoreboard endpoint reached")
+        logger.info("GET /contests/$contestId/scoreboard endpoint reached")
         return ResponseEntity.ok(
             ResponseDto.success(
                 contestBl.getScoreboard(contestId)
