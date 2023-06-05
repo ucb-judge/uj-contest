@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import ucb.judge.ujcontest.dao.*
 import ucb.judge.ujcontest.dao.repository.*
 import ucb.judge.ujcontest.dto.*
+import ucb.judge.ujcontest.exception.UjBadRequestException
 import ucb.judge.ujcontest.exception.UjForbiddenException
 import ucb.judge.ujcontest.exception.UjNotFoundException
 import ucb.judge.ujcontest.mapper.ContestMapper
@@ -166,6 +167,10 @@ class ContestBl @Autowired constructor(
         val contestProblem = ContestProblem()
         contestProblem.contest = contest
         contestProblem.problem = newProblem.get()
+        val contestProblemExists = contestProblemRepository.findByContestContestIdAndProblemProblemId(contestId, problemId)
+        if (contestProblemExists != null) {
+            throw UjBadRequestException("Problem already exists in contest")
+        }
         return contestProblemRepository.save(contestProblem).contestProblemId
     }
 
