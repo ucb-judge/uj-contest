@@ -178,4 +178,20 @@ class ContestApi @Autowired constructor(
         )
     }
 
+    @GetMapping("/{contestId}/validate")
+    fun validateContestSubmission(
+        @PathVariable contestId: Long,
+        @RequestParam(name = "kcUuid") kcUuid: String,
+        @RequestParam(name = "problemId") problemId: Long
+    ): ResponseEntity<ResponseDto<Boolean>> {
+        logger.info("GET /contests/$contestId/validate endpoint reached")
+        return ResponseEntity.ok(
+            ResponseDto(
+                data = contestBl.validateContestSubmission(contestId, problemId, kcUuid),
+                message = "Contest submission validated successfully",
+                successful = true
+            )
+        )
+    }
+
 }

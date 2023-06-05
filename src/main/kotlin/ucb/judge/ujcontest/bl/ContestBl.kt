@@ -3,9 +3,7 @@ package ucb.judge.ujcontest.bl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import ucb.judge.ujcontest.dao.ContestProblem
-import ucb.judge.ujcontest.dao.Professor
-import ucb.judge.ujcontest.dao.StudentContest
+import ucb.judge.ujcontest.dao.*
 import ucb.judge.ujcontest.dao.repository.*
 import ucb.judge.ujcontest.dto.*
 import ucb.judge.ujcontest.exception.UjNotFoundException
@@ -167,6 +165,34 @@ class ContestBl @Autowired constructor(
         val contestScoreboardMapper : ContestScoreboardMapper = ContestScoreboardMapperImpl()
         return scoreboard.map{ score ->
             contestScoreboardMapper.toDto(score)
+        }
+    }
+
+    fun validateContestSubmission(contestId: Long, problemId: Long, kcUuid: String): Boolean {
+        try {
+            logger.info("Validate contest submission Business Logic initiated")
+            contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
+            val token = "Bearer ${keycloakBl.getToken()}"
+            logger.info("Getting student id from uj-users")
+            val studentId = ujUsersService.getStudentByKcUuid(kcUuid, token).data ?: throw UjNotFoundException("Student not found")
+            logger.info("Getting student contest")
+            val studentContest = studentContestRepository.findByStudentStudentIdAndContestContestId(studentId, contestId)
+            if(studentContest == null) {
+                logger.info("student not in contest")
+                return false
+            } else {
+                logger.info("Getting contest problem")
+                val contestProblem = contestProblemRepository.findByContestContestIdAndProblemProblemId(contestId, problemId)
+                if(contestProblem == null) {
+                    logger.info("problem not in contest")
+                    return false
+                }
+                logger.info(contestProblem.contestProblemId.toString())
+                return true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
         }
     }
 }
