@@ -49,7 +49,7 @@ class ContestBl @Autowired constructor(
 
     fun createContest(contestDto: ContestDto): Long {
         logger.info("Create contest Business Logic initiated")
-        contestDto.professor = getProfessorDto()
+        contestDto.professor = getProfessorDto(contestDto.professor?.kcUuid)
         val contestMapper: ContestMapper = ContestMapperImpl()
         return contestRepository.save(
             contestMapper.toEntity(contestDto)
@@ -59,17 +59,17 @@ class ContestBl @Autowired constructor(
     fun updateContest(contestId: Long, contestDto: ContestDto): Long {
         logger.info("Update contest Business Logic initiated")
         val contest = contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
-        contestDto.professor = getProfessorDto()
+        contestDto.professor = getProfessorDto(contestDto.professor?.kcUuid)
         val contestMapper: ContestMapper = ContestMapperImpl()
         val updatedContest = contestMapper.toEntity(contestDto)
         updatedContest.contestId = contest.contestId
         return contestRepository.save(updatedContest).contestId
     }
 
-    fun getProfessorDto(): ProfessorDto{
-        val kcUuid = KeycloakSecurityContextHolder.getSubject() ?: throw UjNotFoundException("User not found")
+    fun getProfessorDto(kcUuid: String?): ProfessorDto{
+        val professorKcUuid = kcUuid ?: KeycloakSecurityContextHolder.getSubject() ?: throw UjNotFoundException("User not found")
         val token = "Bearer ${keycloakBl.getToken()}"
-        val professorId = ujUsersService.getProfessorByKcUuid(kcUuid, token).data ?: throw UjNotFoundException("Professor not found")
+        val professorId = ujUsersService.getProfessorByKcUuid(professorKcUuid, token).data ?: throw UjNotFoundException("Professor not found")
         val professor = professorRepository.findByProfessorIdAndStatusIsTrue(professorId) ?: throw UjNotFoundException("Professor not found")
         val professorMapper : ProfessorMapper = ProfessorMapperImpl()
         return professorMapper.toDto(professor)
@@ -122,12 +122,6 @@ class ContestBl @Autowired constructor(
         }
         val student = studentRepository.findByStudentIdAndStatusIsTrue(studentId) ?: throw UjNotFoundException("Student not found")
         val contest = contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
-        if (contest.startingDate.before(Date())) {
-            throw UjNotFoundException("Contest already started")
-        }
-        if (contest.endingDate.before(Date())) {
-            throw UjNotFoundException("Contest already ended")
-        }
         val newStudentContest = StudentContest()
         newStudentContest.student = student
         newStudentContest.contest = contest
