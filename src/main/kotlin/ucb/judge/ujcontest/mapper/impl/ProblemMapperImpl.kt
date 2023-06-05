@@ -9,7 +9,7 @@ class ProblemMapperImpl : ProblemMapper{
         return ProblemDto(
             problem.problemId,
             problem.title,
-            problem.problemTags!!.map { it.tag!!.name }
+//            problem.problemTags!!.map { it.tag!!.name }
         )
     }
 }

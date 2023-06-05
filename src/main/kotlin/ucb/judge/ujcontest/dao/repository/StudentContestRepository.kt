@@ -5,4 +5,5 @@ import ucb.judge.ujcontest.dao.StudentContest
 
 interface StudentContestRepository : JpaRepository<StudentContest, Long> {
     fun findStudentsByContestContestId(contestId: Long): List<StudentContest>
+    fun findByStudentStudentIdAndContestContestId(studentId: Long, contestId: Long): StudentContest?
 }

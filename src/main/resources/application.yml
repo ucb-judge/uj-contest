@@ -1,34 +1,40 @@
 server:
-  port: 8086
+  port: ${PORT:8086}
 
 spring:
+  application:
+    name: uj-contests
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
   datasource:
-    url: jdbc:postgresql://localhost:5432/ucb-judge
-    #    username: postgres
-    #    password: postgres
-    driver-class-name: org.postgresql.Driver
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/db_ucb_judge}
     jpa:
       hibernate:
         ddl-auto: none
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8711/eureka/
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka/}
 
 keycloak:
-  auth-server-url: http://localhost:8090
+  auth-server-url: ${KEYCLOAK_SERVER_URI:http://localhost:8090}
   autodetect-bearer-only: true
   credentials:
-    secret: CdxeNJUUwQ7MJr0wnkcxTGuQIdkx4tTH
-  realm: ucb-judge
-  resource: uj-contest
+    secret: ${KEYCLOAK_CLIENT_SECRET:fwdl2KIB09PoKJ9xr1mnLzRbt6XTRihd}
+  realm: ${KEYCLOAK_REALM:ucb-judge}
+  resource: ${KEYCLOAK_CLIENT_ID:uj-contests}
   ssl-required: none
   use-resource-role-mappings: false
   security-constraints:
     - auth-roles:
         - professor
         - student
+        - uj-contest-access
       security-collections:
         - name: contests
           omitted-methods:

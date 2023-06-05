@@ -99,6 +99,36 @@ class ContestApi @Autowired constructor(
         )
     }
 
+    /**
+     * Sign up to contest
+     * @param contestId
+    */
+
+    @PostMapping("/{contestId}/signup")
+    fun signUpToContest(
+        @PathVariable contestId: Long
+    ): ResponseEntity<ResponseDto<Long>> {
+        logger.info("POST /contest/$contestId/signup endpoint reached")
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ResponseDto.success(
+                contestBl.signUpToContest(contestId)
+            )
+        )
+    }
+
+    @PostMapping("/{contestId}/register/{kcUuid}")
+    fun registerToContest(
+        @PathVariable kcUuid: String,
+        @PathVariable contestId: Long
+    ): ResponseEntity<ResponseDto<Long>> {
+        logger.info("POST /contest/$contestId/register endpoint reached")
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ResponseDto.success(
+                contestBl.registerToContest(contestId, kcUuid)
+            )
+        )
+    }
+
     @GetMapping("/{contestId}/participants")
     fun getParticipantsByContestId(
         @PathVariable contestId: Long
