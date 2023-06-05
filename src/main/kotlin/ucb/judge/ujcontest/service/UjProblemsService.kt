@@ -14,11 +14,11 @@ interface UjProblemsService {
     fun getProblemById(
         @PathVariable("id", required = true) id: Long,
         @RequestHeader("Authorization") token: String
-    ):ResponseDto<ProblemDto>
+    ): ResponseDto<ProblemDto>
 
     @GetMapping("/api/v1/problems/{id}/exists")
     fun existsProblemById(
         @PathVariable("id", required = true) id: Long,
         @RequestHeader("Authorization") token: String
-    ):Boolean
+    ): Boolean
 }

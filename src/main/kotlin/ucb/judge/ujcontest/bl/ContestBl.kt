@@ -9,11 +9,9 @@ import ucb.judge.ujcontest.dto.*
 import ucb.judge.ujcontest.exception.UjForbiddenException
 import ucb.judge.ujcontest.exception.UjNotFoundException
 import ucb.judge.ujcontest.mapper.ContestMapper
-import ucb.judge.ujcontest.mapper.ContestScoreboardMapper
 import ucb.judge.ujcontest.mapper.ProfessorMapper
 import ucb.judge.ujcontest.mapper.StudentMapper
 import ucb.judge.ujcontest.mapper.impl.ContestMapperImpl
-import ucb.judge.ujcontest.mapper.impl.ContestScoreboardMapperImpl
 import ucb.judge.ujcontest.mapper.impl.ProfessorMapperImpl
 import ucb.judge.ujcontest.mapper.impl.StudentMapperImpl
 import ucb.judge.ujcontest.service.UjProblemsService
@@ -172,12 +170,23 @@ class ContestBl @Autowired constructor(
     }
 
     fun getScoreboard(contestId: Long) : List<ContestScoreboardDto> {
+        val token = "Bearer ${keycloakBl.getToken()}"
         logger.info("Get scoreboard by contest id Business Logic initiated")
         contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
         val scoreboard = contestScoreboardRepository.findByContestContestId(contestId)
-        val contestScoreboardMapper : ContestScoreboardMapper = ContestScoreboardMapperImpl()
         return scoreboard.map{ score ->
-            contestScoreboardMapper.toDto(score)
+            val user = ujUsersService.getProfile(score.student!!.kcUuid, token).data ?: throw UjNotFoundException("Student not found")
+            val userDetailsDto = UserDetailsDto(
+                userId = 0,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                email = user.email
+            );
+            val contestScoreboardDto = ContestScoreboardDto(
+                student = userDetailsDto,
+                problemsSolved = score.problemsSolved,
+            )
+            contestScoreboardDto
         }
     }
 
