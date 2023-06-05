@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import ucb.judge.ujcontest.dao.*
 import ucb.judge.ujcontest.dao.repository.*
 import ucb.judge.ujcontest.dto.*
+import ucb.judge.ujcontest.exception.UjForbiddenException
 import ucb.judge.ujcontest.exception.UjNotFoundException
 import ucb.judge.ujcontest.mapper.ContestMapper
 import ucb.judge.ujcontest.mapper.ContestScoreboardMapper
@@ -168,7 +169,7 @@ class ContestBl @Autowired constructor(
         }
     }
 
-    fun validateContestSubmission(contestId: Long, problemId: Long, kcUuid: String): Boolean {
+    fun validateContestSubmission(contestId: Long, problemId: Long, kcUuid: String): Long {
         try {
             logger.info("Validate contest submission Business Logic initiated")
             contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
@@ -179,20 +180,20 @@ class ContestBl @Autowired constructor(
             val studentContest = studentContestRepository.findByStudentStudentIdAndContestContestId(studentId, contestId)
             if(studentContest == null) {
                 logger.info("student not in contest")
-                return false
+                throw UjForbiddenException("Student not in contest")
             } else {
                 logger.info("Getting contest problem")
                 val contestProblem = contestProblemRepository.findByContestContestIdAndProblemProblemId(contestId, problemId)
                 if(contestProblem == null) {
                     logger.info("problem not in contest")
-                    return false
+                    throw UjForbiddenException("Problem not in contest")
                 }
                 logger.info(contestProblem.contestProblemId.toString())
-                return true
+                return contestProblem.contestProblemId
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            return false
+            throw UjForbiddenException("Error processing request")
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import ucb.judge.ujcontest.dto.ResponseDto
+import ucb.judge.ujcontest.exception.UjForbiddenException
 import ucb.judge.ujcontest.exception.UjNotFoundException
 
 @ControllerAdvice
@@ -32,5 +33,16 @@ class ExceptionHandlerController {
             500 to HttpStatus.INTERNAL_SERVER_ERROR,
         )
         return ResponseEntity(ResponseDto(null, ex.message!!, false),http[ex.status()]!!)
+    }
+
+    @ExceptionHandler(UjForbiddenException::class)
+    fun handleUjForbiddenException(e: UjForbiddenException): ResponseEntity<ResponseDto<Nothing>> {
+        val message = e.message ?: "Forbidden"
+        logger.error("UjForbiddenException: $message")
+        return ResponseEntity(ResponseDto(
+            data = null,
+            message = message,
+            successful = false
+        ), HttpStatus.FORBIDDEN)
     }
 }

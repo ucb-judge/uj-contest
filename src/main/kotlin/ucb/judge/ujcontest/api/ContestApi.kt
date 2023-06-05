@@ -183,7 +183,7 @@ class ContestApi @Autowired constructor(
         @PathVariable contestId: Long,
         @RequestParam(name = "kcUuid") kcUuid: String,
         @RequestParam(name = "problemId") problemId: Long
-    ): ResponseEntity<ResponseDto<Boolean>> {
+    ): ResponseEntity<ResponseDto<Long>> {
         logger.info("GET /contests/$contestId/validate endpoint reached")
         return ResponseEntity.ok(
             ResponseDto(
