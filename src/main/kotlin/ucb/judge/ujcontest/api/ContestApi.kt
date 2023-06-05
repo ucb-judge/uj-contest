@@ -9,7 +9,7 @@ import ucb.judge.ujcontest.bl.ContestBl
 import ucb.judge.ujcontest.dto.*
 
 @RestController
-@RequestMapping("/api/v1/contest")
+@RequestMapping("/api/v1/contests")
 class ContestApi @Autowired constructor(
     private val contestBl: ContestBl,
 ) {

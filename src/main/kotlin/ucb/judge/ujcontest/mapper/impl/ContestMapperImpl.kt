@@ -33,7 +33,7 @@ class ContestMapperImpl : ContestMapper {
         contest.endingDate = contestDto.endDate
         contest.professor = professorMapper.toEntity(contestDto.professor!!)
         contest.subject = if (contestDto.subject == null) null else subjectMapper.toEntity(contestDto.subject!!)
-
+        contest.isPublic = contestDto.isPublic
         return contest
     }
 }
