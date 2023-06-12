@@ -128,7 +128,7 @@ class ContestBl @Autowired constructor(
         val studentId = ujUsersService.getStudentByKcUuid(kcUuid, token).data ?: throw UjNotFoundException("Student not found")
         val studentContest = studentContestRepository.findByStudentStudentIdAndContestContestId(studentId, contestId)
         if (studentContest != null) {
-            throw UjNotFoundException("Student already registered")
+            throw UjBadRequestException("Student already registered")
         }
         val student = studentRepository.findByStudentIdAndStatusIsTrue(studentId) ?: throw UjNotFoundException("Student not found")
         val contest = contestRepository.findByContestIdAndStatusIsTrue(contestId) ?: throw UjNotFoundException("Contest not found")
@@ -205,13 +205,12 @@ class ContestBl @Autowired constructor(
             logger.info("Getting student contest")
             val studentContest = studentContestRepository.findByStudentStudentIdAndContestContestId(studentId, contestId)
             if(studentContest == null) {
-                logger.info("student not in contest")
+                logger.warn("BAC WARNING 403: Student with id '$studentId' tried to submit to contest with id '$contestId' without being registered")
                 throw UjForbiddenException("Student not in contest")
             } else {
-                logger.info("Getting contest problem")
                 val contestProblem = contestProblemRepository.findByContestContestIdAndProblemProblemId(contestId, problemId)
                 if(contestProblem == null) {
-                    logger.info("problem not in contest")
+                    logger.warn("BAC WARNING 403: Student with id '$studentId' tried to submit problem with id '$problemId' to contest with id '$contestId', but problem is not in contest")
                     throw UjForbiddenException("Problem not in contest")
                 }
                 logger.info(contestProblem.contestProblemId.toString())
@@ -219,7 +218,7 @@ class ContestBl @Autowired constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            throw UjForbiddenException("Error processing request")
+            throw UjBadRequestException("Error processing request")
         }
     }
 }
